@@ -1,0 +1,2 @@
+cargo:rustc-env=TYPENUM_BUILD_CONSTS=/home/developer/aoc/aoc18/target/release/build/typenum-c0eb072a3f4f3796/out/consts.rs
+cargo:rustc-env=TYPENUM_BUILD_OP=/home/developer/aoc/aoc18/target/release/build/typenum-c0eb072a3f4f3796/out/op.rs

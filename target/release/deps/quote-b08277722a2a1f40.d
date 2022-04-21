@@ -1,0 +1,13 @@
+/home/developer/aoc/aoc18/target/release/deps/quote-b08277722a2a1f40.rmeta: /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/lib.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/ext.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/format.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/ident_fragment.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/to_tokens.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/runtime.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/spanned.rs
+
+/home/developer/aoc/aoc18/target/release/deps/libquote-b08277722a2a1f40.rlib: /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/lib.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/ext.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/format.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/ident_fragment.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/to_tokens.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/runtime.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/spanned.rs
+
+/home/developer/aoc/aoc18/target/release/deps/quote-b08277722a2a1f40.d: /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/lib.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/ext.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/format.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/ident_fragment.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/to_tokens.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/runtime.rs /opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/spanned.rs
+
+/opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/lib.rs:
+/opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/ext.rs:
+/opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/format.rs:
+/opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/ident_fragment.rs:
+/opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/to_tokens.rs:
+/opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/runtime.rs:
+/opt/rust/registry/src/git.datcon.co.uk-91de7a0a7768d16b/quote-1.0.15/src/spanned.rs:
