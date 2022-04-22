@@ -20,10 +20,10 @@ use chrono::{NaiveDate, NaiveDateTime, Timelike};
 use counter::Counter;
 use regex::Regex;
 
-pub fn day04(_input_lines: &[Vec<String>], _solution_ver: &String) -> (String, String) {
+pub fn day04(_input_lines: &[Vec<String>], _solution_ver: &str) -> (String, String) {
     let answer1: i32;
     let answer2: i32;
-    match _solution_ver.as_str() {
+    match _solution_ver {
         "unsorted" => {
             let mut data = Data::new();
             data.parse_input(_input_lines);
@@ -192,12 +192,10 @@ impl Data {
                 } else if line.ends_with("up") {
                     shift.push_nap_end(time);
                 }
-            } else {
-                if line.ends_with("asleep") {
-                    self.shifts.insert(date, Shift::new_from_start_time(time));
-                } else if line.ends_with("up") {
-                    self.shifts.insert(date, Shift::new_from_end_time(time));
-                }
+            } else if line.ends_with("asleep") {
+                self.shifts.insert(date, Shift::new_from_start_time(time));
+            } else if line.ends_with("up") {
+                self.shifts.insert(date, Shift::new_from_end_time(time));
             }
         }
     }

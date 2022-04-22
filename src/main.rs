@@ -27,7 +27,7 @@ mod utils;
 
 use std::env;
 
-type DayFunction = fn(&[Vec<String>], &String) -> (String, String);
+type DayFunction = fn(&[Vec<String>], &str) -> (String, String);
 static DAY_FUNCTIONS: [DayFunction; 25] = [
     day01::day01,
     day02::day02,
@@ -60,7 +60,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let min_day: usize;
     let max_day: usize;
-    let mut _solution_ver: &String = &"a".to_string();
+    let mut _solution_ver: &str = &"a".to_string();
     if args.len() < 2 {
         min_day = 1;
         max_day = DAY_FUNCTIONS.len();

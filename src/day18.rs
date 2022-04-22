@@ -1,7 +1,7 @@
 // Potential improvements:
 //
 
-pub fn day18(_input_lines: &[Vec<String>], _solution_ver: &String) -> (String, String) {
+pub fn day18(_input_lines: &[Vec<String>], _solution_ver: &str) -> (String, String) {
     let answer1 = 0;
     let answer2 = 0;
     (format!("{}", answer1), format!("{}", answer2))

@@ -1,12 +1,10 @@
 // Potential improvements:
 //
 
-use nalgebra;
-
-pub fn day02(_input_lines: &[Vec<String>], _solution_ver: &String) -> (String, String) {
+pub fn day02(_input_lines: &[Vec<String>], _solution_ver: &str) -> (String, String) {
     let answer1: i32;
     let answer2: String;
-    match _solution_ver.as_str() {
+    match _solution_ver {
         "basic" => {
             answer1 = part_one(_input_lines.get(0).unwrap());
             answer2 = part_two_basic(_input_lines.get(0).unwrap());

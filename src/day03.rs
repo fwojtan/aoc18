@@ -3,11 +3,10 @@
 
 use std::collections::{HashMap, HashSet};
 
-use itertools::{iproduct, Itertools};
-use nalgebra;
+use itertools::{iproduct};
 use regex::{self, Regex};
 
-pub fn day03(_input_lines: &[Vec<String>], _solution_ver: &String) -> (String, String) {
+pub fn day03(_input_lines: &[Vec<String>], _solution_ver: &str) -> (String, String) {
     test_function();
 
     // let answer1 = part_one(_input_lines.get(0).unwrap());
@@ -42,7 +41,7 @@ fn part_one(input: &Vec<String>) -> i32 {
     // let _total = nalgebra::SMatrix::<i32, 1000, 1000>::zeros();
     let mut map: HashMap<i32, HashMap<i32, i32>> = HashMap::new();
     for line in input {
-        let (id, x_off, y_off, x_len, y_len) = parse_input_line(line);
+        let (_id, x_off, y_off, x_len, y_len) = parse_input_line(line);
 
         for (x, y) in iproduct!(x_off + 1..x_off + x_len + 1, y_off + 1..y_off + y_len + 1) {
             if let Some(inner_map) = map.get_mut(&x) {

@@ -2,7 +2,7 @@
 //
 use std::collections::HashSet;
 
-pub fn day01(_input_lines: &[Vec<String>], _solution_ver: &String) -> (String, String) {
+pub fn day01(_input_lines: &[Vec<String>], _solution_ver: &str) -> (String, String) {
     let answer1 = _input_lines
         .get(0)
         .unwrap()

@@ -3,13 +3,13 @@
 
 use itertools::zip;
 
-pub fn day05(_input_lines: &[Vec<String>], _solution_ver: &String) -> (String, String) {
-    let answer1 = length_of_reacted_polymer(_input_lines.get(0).unwrap().get(0).unwrap());
-    let answer2 = modify_and_find_shortest_poly_len(_input_lines.get(0).unwrap().get(0).unwrap());
+pub fn day05(input_lines: &[Vec<String>], _solution_ver: &str) -> (String, String) {
+    let answer1 = length_of_reacted_polymer(&input_lines[0][0]);
+    let answer2 = modify_and_find_shortest_poly_len(&input_lines[0][0]);
     (format!("{}", answer1), format!("{}", answer2))
 }
 
-fn length_of_reacted_polymer(polymer: &String) -> i32 {
+fn length_of_reacted_polymer(polymer: &str) -> i32 {
     let mut input_characters = polymer.chars();
     let mut left_char = input_characters.next().unwrap();
     let mut checked_chars: Vec<char> = vec![];
@@ -28,21 +28,17 @@ fn length_of_reacted_polymer(polymer: &String) -> i32 {
 }
 
 fn check_pair(left_char: char, right_char: char) -> bool {
-    if left_char.eq_ignore_ascii_case(&right_char)
-        || ((left_char.is_ascii_lowercase() && right_char.is_ascii_uppercase())
+    left_char.eq_ignore_ascii_case(&right_char)
+        && ((left_char.is_ascii_lowercase() && right_char.is_ascii_uppercase())
             || (right_char.is_ascii_lowercase() && left_char.is_ascii_uppercase()))
-    {
-        true
-    } else {
-        false
-    }
 }
 
-fn modify_and_find_shortest_poly_len(polymer: &String) -> i32 {
+fn modify_and_find_shortest_poly_len(polymer: &str) -> i32 {
     let lowercase = "abcdefghijklmnopqrstuvwxyz".chars();
     let uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".chars();
     let mut lengths: Vec<i32> = vec![];
     for (lower, upper) in zip(lowercase, uppercase) {
+        // let new_poly = polymer.replace(lower, "").replace(upper, "");
         let new_poly = polymer.replace(lower, "").replace(upper, "");
         lengths.push(length_of_reacted_polymer(&new_poly));
     }
