@@ -1,8 +1,8 @@
 // Potential improvements:
 //
 
-use std::collections::HashMap;
 use counter::Counter;
+use std::collections::HashMap;
 
 use regex::Regex;
 
@@ -21,7 +21,7 @@ struct Point {
 
 impl Point {
     fn new(x: i32, y: i32) -> Point {
-        Point{x, y}
+        Point { x, y }
     }
 
     fn manhattan_distance(self, other: &Point) -> i32 {
@@ -31,40 +31,60 @@ impl Point {
 
 #[derive(Debug, Clone)]
 struct PointsList {
-    list: Vec<Point>
+    list: Vec<Point>,
 }
 
 impl PointsList {
     fn new_from_puzzle_input(input: &Vec<String>) -> PointsList {
-        let mut coords: Vec<Point> = vec!();
+        let mut coords: Vec<Point> = vec![];
         for coord in input {
             let re = Regex::new(r"(\d+), (\d+)").unwrap();
             let caps = re.captures(coord).unwrap();
             let mut vals = caps
-            .iter()
-            .skip(1)
-            .map(|hit| hit.unwrap().as_str().parse::<i32>().unwrap());
+                .iter()
+                .skip(1)
+                .map(|hit| hit.unwrap().as_str().parse::<i32>().unwrap());
             let x = vals.next().unwrap();
             let y = vals.next().unwrap();
             coords.push(Point::new(x, y));
         }
-        PointsList{list: coords}
+        PointsList { list: coords }
     }
 
     fn x_min(&self) -> i32 {
-        self.list.clone().into_iter().min_by_key(|point| point.x).unwrap().x
+        self.list
+            .clone()
+            .into_iter()
+            .min_by_key(|point| point.x)
+            .unwrap()
+            .x
     }
 
     fn y_min(&self) -> i32 {
-        self.list.clone().into_iter().min_by_key(|point| point.y).unwrap().y
+        self.list
+            .clone()
+            .into_iter()
+            .min_by_key(|point| point.y)
+            .unwrap()
+            .y
     }
 
     fn x_max(&self) -> i32 {
-        self.list.clone().into_iter().max_by_key(|point| point.x).unwrap().x
+        self.list
+            .clone()
+            .into_iter()
+            .max_by_key(|point| point.x)
+            .unwrap()
+            .x
     }
 
     fn y_max(&self) -> i32 {
-        self.list.clone().into_iter().max_by_key(|point| point.y).unwrap().y
+        self.list
+            .clone()
+            .into_iter()
+            .max_by_key(|point| point.y)
+            .unwrap()
+            .y
     }
 
     fn get_closest_point(&self, point: Point) -> Option<Point> {
@@ -72,7 +92,7 @@ impl PointsList {
         let mut distance = 1000000000;
         for coord in self.list.clone() {
             let dist = coord.manhattan_distance(&point);
-            if  dist < distance {
+            if dist < distance {
                 closest = Some(coord);
                 distance = dist;
             } else if dist == distance {
@@ -83,7 +103,11 @@ impl PointsList {
     }
 
     fn get_total_distance(&self, point: Point) -> i32 {
-        self.list.clone().into_iter().map(|coord| coord.manhattan_distance(&point)).sum()
+        self.list
+            .clone()
+            .into_iter()
+            .map(|coord| coord.manhattan_distance(&point))
+            .sum()
     }
 }
 
@@ -110,16 +134,6 @@ fn count_included_distance(points: &PointsList) -> i32 {
     }
     counter
 }
-
-
-
-
-
-
-
-
-
-
 
 #[cfg(test)]
 mod tests {

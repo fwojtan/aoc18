@@ -3,7 +3,7 @@
 
 use std::collections::{HashMap, HashSet};
 
-use itertools::{iproduct};
+use itertools::iproduct;
 use regex::{self, Regex};
 
 pub fn day03(_input_lines: &[Vec<String>], _solution_ver: &str) -> (String, String) {
