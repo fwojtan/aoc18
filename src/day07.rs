@@ -10,25 +10,8 @@
 //
 // part two thoughts:
 // can have a loop running through seconds, tracking whether each worker is occupied,
-// have a 'next task' ready to go. Only remove tasks from the graph once complete, only
+// Only remove tasks from the graph once complete, only
 // find the next task when a worker picks a task up
-
-// this approach for part two may be completely broken because we can end up with the same task twice??
-
-// maybe it's better to prune all incoming edges when a task is first assigned..
-// ooh also this definitely won't work because tasks will block on the previously asigned task
-
-// this is a silly solution, but could use edge weight to distinguish between blocking and non-blocking dependency
-// that unblocked it but this algo I've been using for part two is fundamentally busted
-// what if a task finishes and unblocks a task, but that task never gets picked up because it's not most recently assigned
-
-// I think the algo needs to be ->
-// assign as many available tasks as poss
-// when task is complete delete it's node
-// repeat
-// that seems way simpler..? I just need a 'find_next_available_task' function
-// turns out this is just the 'find_first_item' function I already wrote?
-
 
 use petgraph::{
     dot::Dot,
@@ -58,7 +41,7 @@ fn part_one(input: &Vec<String>) -> String {
         if let Some(next_item) = next_item {
             last_item = next_item;
         } else {
-            break
+            break;
         }
     }
 
@@ -69,44 +52,43 @@ fn part_two(input: &Vec<String>) -> i32 {
     let mut graph = build_graph_from_input(&input);
 
     // track the task letter and the end-time of a task
-    let mut active_tasks: Vec<Option<(char, i32)>> = vec!(None; 5);
+    let mut active_tasks: Vec<Option<(char, i32)>> = vec![None; 5];
     let mut time: i32 = 0;
     // each iteration represents one second
     loop {
         // pickup tasks for all available workers (check if None)
-        for task in &mut active_tasks {
-            if task.is_none() {
+        for i in 0..active_tasks.len() {
+            if active_tasks[i].is_none() {
                 // work out next task (if one exists)
                 if let Some(new_task) = find_first_avail_item(&mut graph) {
+                    // calculate task end-time and add to active tasks (need the -1, missing it turned out to be an annoying bug)
+                    active_tasks[i] =
+                        Some((new_task, time + task_letter_to_duration(&new_task) - 1));
 
-                    // calculate task end-time and add to active tasks
-                    task.replace((new_task, time + task_letter_to_duration(&new_task)));
-                    
+                    // add the task as its own dependency so it doesn't get picked up again
+                    graph.add_edge(new_task, new_task, 2);
                 }
             }
         }
 
         if active_tasks.iter().all(|task| task.is_none()) {
-            break
+            break;
         }
 
         // check if this is final second of task for any workers
         for i in 0..active_tasks.len() {
             if let Some(task_details) = active_tasks[i] {
-                // stop tracking the task as active
                 if task_details.1 == time {
+                    // stop tracking the task as active
                     active_tasks[i] = None;
+                    // remove the task as a dependency in the task graph
+                    graph.remove_node(task_details.0);
                 }
-                // remove the task as a dependency in the task graph
-                graph.remove_node(task_details.0);
-
             }
         }
 
         time += 1;
     }
-
-    // print_graph_dot(&graph);
 
     time
 }
@@ -137,10 +119,20 @@ fn find_next_item(graph: &mut GraphMap<char, i32, Directed>, previous_item: char
 }
 
 fn find_first_avail_item(graph: &mut GraphMap<char, i32, Directed>) -> Option<char> {
-    // find all items with no dependencies
+    // find all items with no 'weight 1' dependencies
+    // weight 1 dependencies are ones specified by the input
+    // weight 0 ones are ones I have added that shouldn't count
+    // weight 2 should block the node again (number not significant in any way)
+    // this is stupidly complicated, but I promise it made sense when there was
+    // just a part 1
     let mut starting_set = vec![];
     for node in graph.nodes() {
-        if graph.neighbors_directed(node, Incoming).count() == 0 {
+        if graph
+            .neighbors_directed(node, Incoming)
+            .filter(|neighbour| graph.edge_weight(*neighbour, node).unwrap().to_owned() > 0)
+            .count()
+            == 0
+        {
             starting_set.push(node);
         }
     }
@@ -162,6 +154,7 @@ fn find_first_avail_item(graph: &mut GraphMap<char, i32, Directed>) -> Option<ch
     }
 }
 
+#[allow(dead_code)] // I implemented this when I thought I needed it (I didn't..)
 fn prune_incoming_edges(graph: &mut GraphMap<char, i32, Directed>, node: char) {
     let neighbours_to_prune: Vec<char> = graph.neighbors_directed(node, Incoming).collect();
     for neighbour in neighbours_to_prune {
