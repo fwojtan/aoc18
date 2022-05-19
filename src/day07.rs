@@ -26,7 +26,8 @@
 // assign as many available tasks as poss
 // when task is complete delete it's node
 // repeat
-// that seems way simpler..?
+// that seems way simpler..? I just need a 'find_next_available_task' function
+// turns out this is just the 'find_first_item' function I already wrote?
 
 
 use petgraph::{
@@ -49,9 +50,9 @@ fn part_one(input: &Vec<String>) -> String {
     let mut items = vec![];
 
     // finding the starting point is slightly different to finding subsequent nodes
-    let mut last_item = find_first_item(&mut graph);
+    let mut last_item = find_first_avail_item(&mut graph).unwrap();
     loop {
-        let next_item = find_next_item(&mut graph, last_item, false);
+        let next_item = find_next_item(&mut graph, last_item);
         graph.remove_node(last_item);
         items.push(last_item);
         if let Some(next_item) = next_item {
@@ -69,33 +70,18 @@ fn part_two(input: &Vec<String>) -> i32 {
 
     // track the task letter and the end-time of a task
     let mut active_tasks: Vec<Option<(char, i32)>> = vec!(None; 5);
-
-    let mut most_recent_task = find_first_item(&mut graph);
-    active_tasks[0] = Some((most_recent_task, task_letter_to_duration(&most_recent_task)));
-    
     let mut time: i32 = 0;
     // each iteration represents one second
     loop {
-
-        println!("{}, {:?}", time, active_tasks);
-        println!("most recent: {}, next: {:?}", most_recent_task, find_next_item(&mut graph, most_recent_task, true));
-        let n_neighbours: Vec<char> = graph
-        .neighbors_directed('B', Outgoing)
-        .filter(|node| graph.neighbors_directed(*node, Incoming).count() == 1)
-        .collect();
-        println!("{:?}", n_neighbours);
         // pickup tasks for all available workers (check if None)
         for task in &mut active_tasks {
             if task.is_none() {
                 // work out next task (if one exists)
-                if let Some(new_task) = find_next_item(&mut graph, most_recent_task, true) {
-                    most_recent_task = new_task;
+                if let Some(new_task) = find_first_avail_item(&mut graph) {
 
                     // calculate task end-time and add to active tasks
                     task.replace((new_task, time + task_letter_to_duration(&new_task)));
                     
-                    // removing incoming edges from the task's node so it can't be selected again
-                    prune_incoming_edges(&mut graph, new_task)
                 }
             }
         }
@@ -107,9 +93,13 @@ fn part_two(input: &Vec<String>) -> i32 {
         // check if this is final second of task for any workers
         for i in 0..active_tasks.len() {
             if let Some(task_details) = active_tasks[i] {
+                // stop tracking the task as active
                 if task_details.1 == time {
                     active_tasks[i] = None;
                 }
+                // remove the task as a dependency in the task graph
+                graph.remove_node(task_details.0);
+
             }
         }
 
@@ -121,24 +111,13 @@ fn part_two(input: &Vec<String>) -> i32 {
     time
 }
 
-fn find_next_item(graph: &mut GraphMap<char, i32, Directed>, previous_item: char, part_two: bool) -> Option<char> {
-    let mut item_set: Vec<char>;
-    if !part_two {
-        // find all dependent nodes
-        // for each dependent node, if it has more than one dependency, it's not available
-        item_set = graph
-            .neighbors_directed(previous_item, Outgoing)
-            .filter(|node| graph.neighbors_directed(*node, Incoming).count() == 1)
-            .collect();
-    } else {
-        // for part two we don't want to exclude items from the item set if their dependencies are the 'fake' ones I added
-        item_set = graph
-            .neighbors_directed(previous_item, Outgoing)
-            .filter(|node| graph.neighbors_directed(*node, Incoming)
-                .filter(|neighbour| graph.edge_weight(*neighbour, *node).unwrap().to_owned() == 1)
-                .count() == 1)
-            .collect();
-    }
+fn find_next_item(graph: &mut GraphMap<char, i32, Directed>, previous_item: char) -> Option<char> {
+    // find all dependent nodes
+    // for each dependent node, if it has more than one dependency, it's not available
+    let mut item_set: Vec<char> = graph
+        .neighbors_directed(previous_item, Outgoing)
+        .filter(|node| graph.neighbors_directed(*node, Incoming).count() == 1)
+        .collect();
 
     if item_set.is_empty() {
         None
@@ -157,7 +136,7 @@ fn find_next_item(graph: &mut GraphMap<char, i32, Directed>, previous_item: char
     }
 }
 
-fn find_first_item(graph: &mut GraphMap<char, i32, Directed>) -> char {
+fn find_first_avail_item(graph: &mut GraphMap<char, i32, Directed>) -> Option<char> {
     // find all items with no dependencies
     let mut starting_set = vec![];
     for node in graph.nodes() {
@@ -166,17 +145,21 @@ fn find_first_item(graph: &mut GraphMap<char, i32, Directed>) -> char {
         }
     }
 
-    // alphabetise the starting options
-    starting_set.sort();
-    let first_item = starting_set.get(0).unwrap().to_owned();
-    starting_set.remove(0);
+    if starting_set.is_empty() {
+        None
+    } else {
+        // alphabetise the starting options
+        starting_set.sort();
+        let first_item = starting_set.get(0).unwrap().to_owned();
+        starting_set.remove(0);
 
-    // make the remaining items depend on the first node
-    for node in starting_set {
-        graph.add_edge(first_item, node, 0);
+        // make the remaining items depend on the first node
+        for node in starting_set {
+            graph.add_edge(first_item, node, 0);
+        }
+
+        Some(first_item)
     }
-
-    first_item
 }
 
 fn prune_incoming_edges(graph: &mut GraphMap<char, i32, Directed>, node: char) {
