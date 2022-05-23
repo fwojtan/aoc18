@@ -190,16 +190,86 @@ fn print_graph_dot(graph: &GraphMap<char, i32, Directed>) {
 
 #[cfg(test)]
 mod tests {
-    use super::day07;
+    use super::*;
     use crate::utils::load_input;
 
     #[test]
     fn check_day07_case01() {
         full_test(
-            "",  // INPUT STRING
-            "0", // PART 1 RESULT
-            "0", // PART 2 RESULT
+            "Step A must be finished before step B can begin.
+            Step B must be finished before step C can begin.
+            Step A must be finished before step D can begin.", // INPUT STRING
+            "ABCD", // PART 1 RESULT
+            "186",  // PART 2 RESULT 61 + 62 + 63
         )
+    }
+
+    #[test]
+    fn check_day07_case02() {
+        full_test(
+            "Step X must be finished before step Y can begin.
+            Step Y must be finished before step Z can begin.
+            Step Y must be finished before step P can begin.", // INPUT STRING
+            "XYPZ", // PART 1 RESULT
+            "255",  // PART 2 RESULT 84 + 85 + 86
+        )
+    }
+
+    #[test]
+    fn check_letter_value() {
+        let val = task_letter_to_duration(&'A');
+        assert_eq!(val, 61);
+    }
+
+    #[test]
+    fn check_graph_building() {
+        let input = vec!["Step A must be finished before step B can begin.".to_string()];
+        let mut expected: GraphMap<char, i32, Directed> = DiGraphMap::new();
+        expected.add_edge('A', 'B', 1);
+        let actual = build_graph_from_input(&input);
+        assert!(expected.edges('A').eq(actual.edges('A')));
+    }
+
+    #[test]
+    fn check_find_first() {
+        let mut input = dummy_graph();
+        let expected = Some('A');
+        let actual = find_first_avail_item(&mut input);
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn check_find_next() {
+        let mut input = dummy_graph();
+        let expected = Some('C');
+        let actual = find_next_item(&mut input, 'A');
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn check_find_first_from_empty() {
+        let mut input: GraphMap<char, i32, Directed> = DiGraphMap::new();
+        let expected = None;
+        let actual = find_first_avail_item(&mut input);
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn check_find_next_from_last() {
+        let mut input: GraphMap<char, i32, Directed> = DiGraphMap::new();
+        input.add_node('A');
+        let expected = None;
+        let actual = find_next_item(&mut input, 'A');
+        assert_eq!(expected, actual);
+    }
+
+    fn dummy_graph() -> GraphMap<char, i32, Directed> {
+        let mut input: GraphMap<char, i32, Directed> = DiGraphMap::new();
+        input.add_edge('A', 'Z', 1);
+        input.add_edge('B', 'Z', 1);
+        input.add_edge('A', 'C', 1);
+        input.add_edge('C', 'D', 1);
+        input
     }
 
     fn full_test(input_text: &str, part1_result: &str, part2_result: &str) {
