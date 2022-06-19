@@ -50,7 +50,7 @@ impl NodeData {
     }
 }
 
-fn create_tree(input: &String) -> Tree<NodeData> {
+fn create_tree(input: &str) -> Tree<NodeData> {
     let mut input_values: VecDeque<i32> = input.split_ascii_whitespace().map(|val| val.parse::<i32>().unwrap()).collect();
     let mut tree = tr(NodeData::new_empty());
     extract_child(&mut input_values, &mut tree);
@@ -109,7 +109,7 @@ mod tests {
     fn full_test(input_text: &str, part1_result: &str, part2_result: &str) {
         let input_lines = load_input(input_text);
         assert_eq!(
-            day08(&input_lines, &"a".to_string()),
+            day08(&input_lines, "a"),
             (part1_result.to_string(), part2_result.to_string())
         );
     }
