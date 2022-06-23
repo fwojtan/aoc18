@@ -34,7 +34,7 @@ pub fn day02(_input_lines: &[Vec<String>], _solution_ver: &str) -> (String, Stri
             answer2 = "some answer".to_string();
         }
     }
-    (format!("{}", answer1), format!("{}", answer2))
+    (format!("{}", answer1), answer2)
 }
 
 fn part_one(input: &Vec<String>) -> i32 {
@@ -81,7 +81,7 @@ fn part_one_swapped(input: &Vec<String>) -> i32 {
 
 fn part_two_basic(input: &Vec<String>) -> String {
     for (index, item) in input.clone().into_iter().enumerate() {
-        for second_item in input.into_iter().skip(index + 1) {
+        for second_item in input.iter().skip(index + 1) {
             let mut differences = 0;
             let mut pos = 0;
             for (position, (a, b)) in item.clone().chars().zip(second_item.chars()).enumerate() {
@@ -91,7 +91,7 @@ fn part_two_basic(input: &Vec<String>) -> String {
                 }
             }
             if differences == 1 {
-                let mut result = item.clone();
+                let mut result = item;
                 result.remove(pos);
                 return result;
             }
@@ -116,7 +116,7 @@ fn part_two_faster(input: &Vec<String>) -> String {
                 }
             }
             if differences == 1 {
-                let mut result = item.clone();
+                let mut result = item;
                 result.remove(pos);
                 return result;
             }
@@ -139,7 +139,7 @@ fn part_two_sorted(input: &Vec<String>) -> String {
                 }
             }
             if differences == 1 {
-                let mut result = item.clone();
+                let mut result = item;
                 result.remove(pos);
                 return result;
             }
@@ -165,7 +165,7 @@ fn part_two_both(input: &Vec<String>) -> String {
                 }
             }
             if differences == 1 {
-                let mut result = item.clone();
+                let mut result = item;
                 result.remove(pos);
                 return result;
             }
@@ -176,7 +176,7 @@ fn part_two_both(input: &Vec<String>) -> String {
 
 fn _part_two_matrix(input: &Vec<String>) -> String {
     let encoded_values: Vec<u32> = input
-        .into_iter()
+        .iter()
         .flat_map(|val| {
             val.chars()
                 .into_iter()
@@ -221,7 +221,7 @@ mod tests {
     fn full_test(input_text: &str, part1_result: &str, part2_result: &str) {
         let input_lines = load_input(input_text);
         assert_eq!(
-            day02(&input_lines, &"a".to_string()),
+            day02(&input_lines, "a"),
             (part1_result.to_string(), part2_result.to_string())
         );
     }

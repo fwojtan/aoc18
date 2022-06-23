@@ -89,7 +89,7 @@ fn part_two(input: &Vec<String>) -> i32 {
             if let Some(inner_map) = map2.get_mut(&x) {
                 if let Some(value) = inner_map.get(&y) {
                     overlapped = true;
-                    untouched_ids.remove(&value);
+                    untouched_ids.remove(value);
                 } else {
                     inner_map.insert(y, id);
                 }
@@ -103,7 +103,7 @@ fn part_two(input: &Vec<String>) -> i32 {
             untouched_ids.insert(id);
         }
     }
-    *untouched_ids.iter().nth(0).unwrap()
+    *untouched_ids.iter().next().unwrap()
 }
 
 fn combined(input: &Vec<String>) -> (i32, i32) {
@@ -117,7 +117,7 @@ fn combined(input: &Vec<String>) -> (i32, i32) {
             if let Some(inner_map) = map2.get_mut(&x) {
                 if let Some(value) = inner_map.get(&y) {
                     overlapped = true;
-                    untouched_ids.remove(&value);
+                    untouched_ids.remove(value);
                 } else {
                     inner_map.insert(y, id);
                 }
@@ -146,7 +146,7 @@ fn combined(input: &Vec<String>) -> (i32, i32) {
         .into_values()
         .map(|inner_map| inner_map.into_values().filter(|val| *val > 1).count())
         .sum::<usize>() as i32;
-    let part_two = *untouched_ids.iter().nth(0).unwrap();
+    let part_two = *untouched_ids.iter().next().unwrap();
     (part_one, part_two)
 }
 
@@ -167,7 +167,7 @@ mod tests {
     fn full_test(input_text: &str, part1_result: &str, part2_result: &str) {
         let input_lines = load_input(input_text);
         assert_eq!(
-            day03(&input_lines, &"a".to_string()),
+            day03(&input_lines, "a"),
             (part1_result.to_string(), part2_result.to_string())
         );
     }

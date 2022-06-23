@@ -2,7 +2,7 @@
 //
 
 use counter::Counter;
-use std::collections::HashMap;
+
 
 use regex::Regex;
 
@@ -152,7 +152,7 @@ mod tests {
     fn full_test(input_text: &str, part1_result: &str, part2_result: &str) {
         let input_lines = load_input(input_text);
         assert_eq!(
-            day06(&input_lines, &"a".to_string()),
+            day06(&input_lines, "a"),
             (part1_result.to_string(), part2_result.to_string())
         );
     }

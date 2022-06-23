@@ -121,8 +121,8 @@ impl Shift {
         self.id = Some(id);
     }
     fn generate_naps(&mut self) {
-        self.nap_start_times.sort();
-        self.nap_end_times.sort();
+        self.nap_start_times.sort_unstable();
+        self.nap_end_times.sort_unstable();
         for _ in 0..self.nap_start_times.len() {
             self.naps.push(Nap::new(
                 self.nap_start_times.pop().unwrap(),
@@ -171,7 +171,7 @@ impl Data {
     }
 
     fn parse_line(&mut self, line: &String) {
-        let mut split = line.split("]");
+        let mut split = line.split(']');
         let timestamp = split.next().unwrap();
         let (date, time) = self.date_and_time_from_timestamp(timestamp);
         if line.ends_with("shift") {
@@ -283,7 +283,7 @@ mod tests {
     fn full_test(input_text: &str, part1_result: &str, part2_result: &str) {
         let input_lines = load_input(input_text);
         assert_eq!(
-            day04(&input_lines, &"a".to_string()),
+            day04(&input_lines, "a"),
             (part1_result.to_string(), part2_result.to_string())
         );
     }
