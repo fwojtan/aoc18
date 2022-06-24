@@ -3,7 +3,8 @@
 // render an animation showing points converging
 // making skipping stages more efficient (sample rather 
 // than check all particles?)
-
+// use a less expensive distance calculation
+// image to text with openCV to get result
 
 use std::{fmt::Display, collections::HashSet, ops::Div};
 
