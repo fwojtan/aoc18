@@ -1,5 +1,4 @@
 // Potential improvements:
-// autoscale plot boundaries and floip text
 // render an animation showing points converging
 // making skipping stages more efficient (sample rather 
 // than check all particles?)
@@ -135,13 +134,17 @@ fn parse_input(input: &Vec<String>) -> Vec<Particle> {
     particles.into_iter().collect()
 }
 
-fn _plot(particles: &Vec<Particle>) -> Result<(), Box<dyn std::error::Error>> {
-    let root = BitMapBackend::new("images/0.png", (640, 480)).into_drawing_area();
+fn plot(particles: &Vec<Particle>) -> Result<(), Box<dyn std::error::Error>> {
+    let x_min = particles.clone().iter().min_by(|a,b| a.pos.x.cmp(&b.pos.x)).expect("Couldn't get min x coord").pos.x - 10;
+    let x_max = particles.clone().iter().max_by(|a,b| a.pos.x.cmp(&b.pos.x)).expect("Couldn't get max x coord").pos.x + 10;
+    let y_min = particles.clone().iter().min_by(|a,b| a.pos.y.cmp(&b.pos.y)).expect("Couldn't get min y coord").pos.y - 10;
+    let y_max = particles.clone().iter().max_by(|a,b| a.pos.y.cmp(&b.pos.y)).expect("Couldn't get max y coord").pos.y + 10;
+    let root = BitMapBackend::new("images/day10_result.png", (640, 240)).into_drawing_area();
     root.fill(&WHITE)?;
     let mut scatter_ctx = ChartBuilder::on(&root)
-        .x_label_area_size::<i32>(40)
-        .y_label_area_size::<i32>(40)
-        .build_cartesian_2d(140i32..250i32, 80i32..160i32)?; // TODO: Fix these limits automagically
+        .x_label_area_size::<i32>(0)
+        .y_label_area_size::<i32>(0)
+        .build_cartesian_2d(x_min..x_max, y_min..y_max)?; // TODO: Fix these limits automagically
     scatter_ctx
         .configure_mesh()
         .disable_x_mesh()
@@ -150,7 +153,7 @@ fn _plot(particles: &Vec<Particle>) -> Result<(), Box<dyn std::error::Error>> {
     scatter_ctx.draw_series(
         particles
             .iter()
-            .map(|particle| Circle::<(i32, i32), i32>::new((particle.pos.x, particle.pos.y), 2, GREEN.filled())),
+            .map(|particle| Circle::<(i32, i32), i32>::new((particle.pos.x, particle.pos.y), 5, GREEN.filled())),
     )?;
 
     scatter_ctx
@@ -225,7 +228,8 @@ fn find_correct_positions(particles: &mut Vec<Particle>, _part_one: &mut String,
         particles.iter_mut().for_each(|particle| particle.move_one());
         *part_two += 1;
     }
-    // plot(&particles).unwrap();
+    particles.iter_mut().for_each(|particle| particle.pos.y *= -1);
+    plot(&particles).unwrap();
 }
 
 #[cfg(test)]
