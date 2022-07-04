@@ -1,7 +1,13 @@
 // Potential improvements:
-//
+// Vec turns out to be borderline impossible
+// HashMap is much better but is stil quite slow
+// Doubly linked list with a cursor sounds best but rust only has these in nightly..
 
-use std::{collections::HashMap, vec, fmt::Display};
+// Rough runtimes:
+// Vec solves in something in the order of a few hours
+// HashMap solves in 2.5 to 3 seconds
+// LinkedList solves in 250 to 300 milliseconds
+use std::{collections::{HashMap, LinkedList, linked_list::CursorMut}, vec, fmt::Display};
 
 pub fn day09(input_lines: &[Vec<String>], solution_ver: &str) -> (String, String) {
     let mut input = input_lines[0][0].split_ascii_whitespace();
@@ -27,6 +33,20 @@ pub fn day09(input_lines: &[Vec<String>], solution_ver: &str) -> (String, String
             let answer2 = game.high_score();
             (format!("{}", answer1), format!("{}", answer2))
         },
+        "llist" => {
+            let mut list:LinkedList<i32> = LinkedList::new();
+            let marbles = LListMarbles::new_from_list(&mut list);
+            let mut game = Game::new(n_players, final_marble, marbles);
+            game.play_game();
+            let answer1 = game.high_score();
+            let new_final = final_marble * 100;
+            let mut list:LinkedList<i32> = LinkedList::new();
+            let marbles = LListMarbles::new_from_list(&mut list);
+            let mut game = Game::new(n_players, new_final, marbles);
+            game.play_game();
+            let answer2 = game.high_score();
+            (format!("{}", answer1), format!("{}", answer2))
+        }
         _ => panic!("Didn't reconginise solution version")
     }
 }
@@ -232,6 +252,51 @@ impl Display for HashMarbles {
         write!(f, "{}", result)
     }
 }
+struct LListMarbles<'a> {
+    // list: LinkedList<i32>,
+    cursor: CursorMut<'a, i32>,
+}
+
+impl<'a> LListMarbles<'a> {
+    fn new_from_list(list: &'a mut LinkedList<i32>) -> LListMarbles<'a> {
+        list.push_back(0);
+        LListMarbles { cursor:list.cursor_back_mut() }
+    }
+
+    fn move_n_anti_clockwise(&mut self, n: usize) {
+        for _ in 0..n {
+            self.cursor.move_prev();
+            if self.cursor.current().is_none() {
+                self.cursor.move_prev();
+            }
+        }
+    }
+
+}
+
+impl<'a> MarbleCollection for LListMarbles<'a> {
+    fn move_clockwise_and_place_new(&mut self, marble_value: i32) {
+        self.cursor.move_next();
+        if self.cursor.current().is_none() {
+            self.cursor.move_next();
+        }
+        self.cursor.insert_after(marble_value);
+        self.cursor.move_next();
+    }
+
+    fn pop_seventh_and_set_sixth(&mut self) -> i32 {
+        self.move_n_anti_clockwise(7);
+        self.cursor.remove_current().expect("Cursor removed None..!")
+    }
+}
+
+impl <'a> Display for LListMarbles<'a> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // I think it's impossible to display this given that cursor is mutable
+        // and that's the only thing I'm storing in the struct
+        todo!()
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -293,7 +358,7 @@ mod tests {
     fn full_test(input_text: &str, part1_result: &str, part2_result: &str) {
         let input_lines = load_input(input_text);
         assert_eq!(
-            day09(&input_lines, &"hash".to_string()),
+            day09(&input_lines, &"llist".to_string()),
             (part1_result.to_string(), part2_result.to_string())
         );
     }
