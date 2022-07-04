@@ -1,3 +1,4 @@
+#![feature(linked_list_cursors)]
 mod day01;
 mod day02;
 mod day03;
