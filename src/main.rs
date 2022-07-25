@@ -60,7 +60,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let min_day: usize;
     let max_day: usize;
-    let mut _solution_ver: &str = &"a".to_string();
+    let mut _solution_ver: &str = "a";
     if args.len() < 2 {
         min_day = 1;
         max_day = DAY_FUNCTIONS.len();
@@ -82,7 +82,7 @@ fn main() {
         println!("Day {}", day);
         let input_lines: Vec<Vec<String>> = load_input(day);
         let start_time = std::time::Instant::now();
-        let (part1, part2) = DAY_FUNCTIONS[day - 1](&input_lines, &_solution_ver);
+        let (part1, part2) = DAY_FUNCTIONS[day - 1](&input_lines, _solution_ver);
         let elapsed = start_time.elapsed().as_micros();
         println!("Part 1: {}\nPart 2: {}", part1, part2);
         println!("{}.{:03}ms", elapsed / 1000, elapsed % 1000);

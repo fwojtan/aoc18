@@ -17,7 +17,7 @@ pub fn day10(input_lines: &[Vec<String>], _solution_ver: &str) -> (String, Strin
     let mut answer2 = 0;
     find_correct_positions(&mut input_particles, &mut answer1, &mut answer2);
     
-    (format!("{}", answer1), format!("{}", answer2))
+    (answer1.to_string(), format!("{}", answer2))
 }
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
@@ -40,9 +40,9 @@ impl Coord {
     fn distance(self, other: &Coord) -> i32 {
         let x = (self.x - other.x) as i64;
         let y = (self.y - other.y) as i64;
-        let dist = (x*x + y*y).sqrt() as i32;
+        
         // println!("{}", dist);
-        dist
+        (x*x + y*y).sqrt() as i32
     }
 
     fn above(self) -> Coord {
@@ -120,7 +120,7 @@ fn parse_input(input: &Vec<String>) -> Vec<Particle> {
     let mut particles: HashSet<Particle> = HashSet::new(); // want to remove duplicates initially
     for line in input {
         let re = Regex::new(r"position=<\s?(-?\d+), \s?(-?\d+)> velocity=<\s?(-?\d+), \s?(-?\d+)>").unwrap();
-        let caps = re.captures(line).expect(format!("Failed to unwrap line {}", line).as_str());
+        let caps = re.captures(line).unwrap_or_else(|| panic!("Failed to unwrap line {}", line));
         let mut vals = caps
             .iter()
             .skip(1)
@@ -175,7 +175,7 @@ fn find_average_pos(particles: &Vec<Particle>) -> Coord {
 }
 
 fn in_range_of_target(particles: &mut Vec<Particle>, target: &Coord, range:i32) -> bool {
-    let result = particles.iter().all(|particle| particle.pos.distance(&target) < range);
+    let result = particles.iter().all(|particle| particle.pos.distance(target) < range);
     result
 }
 
@@ -189,8 +189,8 @@ fn lineyness(positions: &HashSet<Coord>) -> f32 {
             count += 1;
         }
     }
-    let line_val = (count as f32) / (positions.len() as f32);
-    line_val
+    
+    (count as f32) / (positions.len() as f32)
 }
 
 fn in_final_position(particles: &Vec<Particle>) -> bool {
@@ -213,23 +213,23 @@ fn in_final_position(particles: &Vec<Particle>) -> bool {
 }
 
 fn find_correct_positions(particles: &mut Vec<Particle>, _part_one: &mut String, part_two: &mut i32) {
-    let mut target = find_average_pos(&particles);
+    let mut target = find_average_pos(particles);
     while !in_range_of_target(particles, &target, 10000) {
         particles.iter_mut().for_each(|particle| particle.move_thousand());
-        target = find_average_pos(&particles);
+        target = find_average_pos(particles);
         *part_two += 1000;
     }
     while !in_range_of_target(particles, &target, 1000) {
         particles.iter_mut().for_each(|particle| particle.move_hundred());
-        target = find_average_pos(&particles);
+        target = find_average_pos(particles);
         *part_two += 100;
     }
-    while !in_final_position(&particles) {
+    while !in_final_position(particles) {
         particles.iter_mut().for_each(|particle| particle.move_one());
         *part_two += 1;
     }
     particles.iter_mut().for_each(|particle| particle.pos.y *= -1);
-    plot(&particles).unwrap();
+    plot(particles).unwrap();
 }
 
 #[cfg(test)]
