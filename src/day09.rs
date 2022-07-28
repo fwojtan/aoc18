@@ -359,6 +359,7 @@ mod tests {
         let input_lines = load_input(input_text);
         assert_eq!(
             day09(&input_lines, &"llist".to_string()),
+
             (part1_result.to_string(), part2_result.to_string())
         );
     }

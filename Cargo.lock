@@ -82,6 +82,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "derive_deref"
+version = "1.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dcdbcee2d9941369faba772587a565f4f534e42cb8d17e5295871de730163b2b"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "either"
 version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -323,11 +334,13 @@ dependencies = [
  "chrono",
  "counter",
  "counters",
+ "derive_deref",
  "itertools",
  "nalgebra",
  "num-integer",
  "petgraph",
  "regex",
+ "trees",
  "uuid",
 ]
 
@@ -341,6 +354,12 @@ dependencies = [
  "wasi",
  "winapi",
 ]
+
+[[package]]
+name = "trees"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0de5f738ceab88e2491a94ddc33c3feeadfa95fedc60363ef110845df12f3878"
 
 [[package]]
 name = "typenum"
