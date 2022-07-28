@@ -24,11 +24,11 @@ use regex::Regex;
 pub fn day07(input_lines: &[Vec<String>], _solution_ver: &str) -> (String, String) {
     let answer1 = part_one(&input_lines[0]);
     let answer2 = part_two(&input_lines[0]);
-    (format!("{}", answer1), format!("{}", answer2))
+    (answer1, format!("{}", answer2))
 }
 
 fn part_one(input: &Vec<String>) -> String {
-    let mut graph = build_graph_from_input(&input);
+    let mut graph = build_graph_from_input(input);
     // print_graph_dot(&graph); // print out dot graph viz format to view as picture
     let mut items = vec![];
 
@@ -49,7 +49,7 @@ fn part_one(input: &Vec<String>) -> String {
 }
 
 fn part_two(input: &Vec<String>) -> i32 {
-    let mut graph = build_graph_from_input(&input);
+    let mut graph = build_graph_from_input(input);
 
     // track the task letter and the end-time of a task
     let mut active_tasks: Vec<Option<(char, i32)>> = vec![None; 5];
@@ -105,7 +105,7 @@ fn find_next_item(graph: &mut GraphMap<char, i32, Directed>, previous_item: char
         None
     } else {
         // alphabetise the options
-        item_set.sort();
+        item_set.sort_unstable();
         let first_item = item_set.get(0).unwrap().to_owned();
         item_set.remove(0);
 
@@ -129,7 +129,7 @@ fn find_first_avail_item(graph: &mut GraphMap<char, i32, Directed>) -> Option<ch
     for node in graph.nodes() {
         if graph
             .neighbors_directed(node, Incoming)
-            .filter(|neighbour| graph.edge_weight(*neighbour, node).unwrap().to_owned() > 0)
+            .filter(|neighbour| *graph.edge_weight(*neighbour, node).unwrap() > 0)
             .count()
             == 0
         {
@@ -141,7 +141,7 @@ fn find_first_avail_item(graph: &mut GraphMap<char, i32, Directed>) -> Option<ch
         None
     } else {
         // alphabetise the starting options
-        starting_set.sort();
+        starting_set.sort_unstable();
         let first_item = starting_set.get(0).unwrap().to_owned();
         starting_set.remove(0);
 
@@ -170,7 +170,7 @@ fn build_graph_from_input(input: &Vec<String>) -> DiGraphMap<char, i32> {
         let mut vals = caps
             .iter()
             .skip(1)
-            .map(|hit| hit.unwrap().as_str().chars().nth(0).unwrap());
+            .map(|hit| hit.unwrap().as_str().chars().next().unwrap());
         let x = vals.next().unwrap();
         let y = vals.next().unwrap();
         graph.add_edge(x, y, 1);
@@ -275,7 +275,7 @@ mod tests {
     fn full_test(input_text: &str, part1_result: &str, part2_result: &str) {
         let input_lines = load_input(input_text);
         assert_eq!(
-            day07(&input_lines, &"a".to_string()),
+            day07(&input_lines, "a"),
             (part1_result.to_string(), part2_result.to_string())
         );
     }
