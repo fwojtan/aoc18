@@ -11,7 +11,7 @@ use std::{collections::{HashMap, LinkedList, linked_list::CursorMut}, vec, fmt::
 
 pub fn day09(input_lines: &[Vec<String>], solution_ver: &str) -> (String, String) {
     let mut input = input_lines[0][0].split_ascii_whitespace();
-    let n_players = input.nth(0).unwrap().parse::<usize>().unwrap();
+    let n_players = input.next().unwrap().parse::<usize>().unwrap();
     let final_marble = input.nth(5).unwrap().parse::<i32>().unwrap();
     match solution_ver {
         "vec" => {
@@ -237,7 +237,7 @@ impl MarbleCollection for HashMarbles {
 impl Display for HashMarbles {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut result = "".to_string();
-        let first = self.marble_ring.iter().nth(0).unwrap();
+        let first = self.marble_ring.iter().next().unwrap();
         let mut current = first;
         loop {
             if current.0 == first.0 {
@@ -291,7 +291,7 @@ impl<'a> MarbleCollection for LListMarbles<'a> {
 }
 
 impl <'a> Display for LListMarbles<'a> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, _f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         // I think it's impossible to display this given that cursor is mutable
         // and that's the only thing I'm storing in the struct
         todo!()
@@ -358,7 +358,7 @@ mod tests {
     fn full_test(input_text: &str, part1_result: &str, part2_result: &str) {
         let input_lines = load_input(input_text);
         assert_eq!(
-            day09(&input_lines, &"llist".to_string()),
+            day09(&input_lines, "llist"),
 
             (part1_result.to_string(), part2_result.to_string())
         );
