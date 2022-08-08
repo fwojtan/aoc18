@@ -6,15 +6,22 @@ use std::{thread, sync::{mpsc, Arc, Mutex}, fmt::Display, collections::BTreeMap}
 use rayon::prelude::*;
 use threadpool::ThreadPool;
 
-pub fn day11(input_lines: &[Vec<String>], _solution_ver: &str) -> (String, String) {
+pub fn day11(input_lines: &[Vec<String>], solution_ver: &str) -> (String, String) {
     let grid_sn:i32 = input_lines[0][0].parse().unwrap();
     let grid:Vec<Vec<i32>> = (1..301).map(|x| {
         let row = (1..301).map(|y| power_level(x, y, grid_sn)).collect();
         row
     }).collect();
-
-    let answer1 = largest_3x3(&grid);
-    let answer2 = largest_nxn(&grid);
+    let mut answer1 = (0,0);
+    let mut answer2 =  (0,0,0);
+    if solution_ver == "concurrent" {
+        answer1 = largest_3x3(&grid);
+        answer2 = largest_nxn(&grid);
+    } else {
+        answer1 = largest_3x3(&grid);
+        answer2 = largest_nxn_serial(&grid)
+    }
+    
     (format!("{},{}", answer1.0, answer1.1), format!("{},{},{}", answer2.0, answer2.1, answer2.2))
 }
 
@@ -55,8 +62,9 @@ fn largest_3x3(grid: &Vec<Vec<i32>>) -> (i32, i32) {
                             local_power += arc_grid[x_idx + i][y_idx + j]
                         }
                     }
-                    if local_power > max_power.lock().expect("Failed to get max power mutex for comparison").0 {
-                        *max_power.lock().expect("Failed to get max power mutex to change value") = (local_power, (x_idx+1) as i32, (y_idx+1) as i32);
+                    let mut max_power = max_power.lock().expect("Failed to get max power mutex for comparison");
+                    if local_power > max_power.0 {
+                        *max_power = (local_power, (x_idx+1) as i32, (y_idx+1) as i32);
                     }
                 }
                 }           
@@ -80,9 +88,11 @@ fn largest_nxn(grid: &Vec<Vec<i32>>) -> (i32, i32,i32) {
                 let mut max_local_power = 0;
                 let mut max_n = 0;
                 find_max_power_with_size(&mut max_local_power, &mut max_n, arc_grid, x_idx, y_idx);
-    
-                if max_local_power > max_power.lock().expect("Failed to get max power mutex for comparison").0 {
-                    *max_power.lock().expect("Failed to get max power mutex to change value") = (max_local_power, (x_idx+1) as i32, (y_idx+1) as i32, max_n);
+
+                
+                let mut max_power = max_power.lock().expect("Failed to get max power mutex for comparison");
+                if max_local_power > max_power.0 {
+                    *max_power = (max_local_power, (x_idx+1) as i32, (y_idx+1) as i32, max_n);
                     // println!("Updating max_value {}, {}, {}", max_local_power, (x_idx+1) as i32, (y_idx+1) as i32);
                 }
             }    
@@ -136,6 +146,26 @@ fn find_max_power_with_size(max_local_power: &mut i32, max_n: &mut i32, arc_grid
             *max_n = n as i32;
         }
     }
+}
+
+fn largest_nxn_serial(grid: &Vec<Vec<i32>>) -> (i32, i32,i32) {
+    let arc_grid = Arc::new(grid);
+    let mut max_power = (0, 0, 0, 0); // 0th is power, 1st is x, 2nd is y (should go write a struct really..), 3rd is size
+        for (x_idx, col) in grid.iter().enumerate() {
+            let grid = *arc_grid;
+            for (y_idx, _) in col.iter().enumerate() {            
+                let mut max_local_power = 0;
+                let mut max_n = 0;
+                find_max_power_with_size(&mut max_local_power, &mut max_n, grid, x_idx, y_idx);
+                if max_local_power > max_power.0 {
+                    max_power = (max_local_power, (x_idx+1) as i32, (y_idx+1) as i32, max_n);
+                    // println!("Updating max_value {}, {}, {}", max_local_power, (x_idx+1) as i32, (y_idx+1) as i32);
+                }
+            }    
+            // println!("Max power: {:?}", *max_power.lock().expect("Failed to get max power mutex to report result")); 
+        }
+    // println!("max power:{}", max.0);
+    (max_power.1, max_power.2, max_power.3 as i32)
 }
 
 // Everything below this point is a bad, messy, broken implementation...
