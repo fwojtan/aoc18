@@ -1,11 +1,24 @@
 // Potential improvements:
 //
 
-pub fn day12(_input_lines: &[Vec<String>], _solution_ver: &str) -> (String, String) {
+pub fn day12(input_lines: &[Vec<String>], _solution_ver: &str) -> (String, String) {
+    let initial_state = &input_lines[0];
+    let mappings = &input_lines[1];
+
+    println!("state: {:?}", initial_state);
+    println!("mappings: {:?}", mappings);
+
+
     let answer1 = 0;
     let answer2 = 0;
     (format!("{}", answer1), format!("{}", answer2))
 }
+
+fn pot_value(pots:&str) -> u8 {
+    u8::from_str_radix(pots, 2).unwrap()
+}
+
+
 
 #[cfg(test)]
 mod tests {
