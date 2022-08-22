@@ -22,5 +22,6 @@ regex = "1.5.5"
 threadpool = "1.8.1"
 trees = "0.4.2"
 uuid = {version = "1.0.0", features = ["v4"]}
+wildmatch = "2.1.1"
 
 [features]
